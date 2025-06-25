@@ -45,7 +45,7 @@ jobs:
           tar czf custom-apt-repo.tar.gz repo
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: custom-apt-repo
           path: /home/runner/custom-apt-repo.tar.gz
