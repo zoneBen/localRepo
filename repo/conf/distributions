@@ -1,0 +1,35 @@
+Origin: DTCT
+Label: MyLocalAPTRepo
+Suite: stable
+Codename: bionic
+Architectures: amd64 arm64
+Components: main
+Description: Ubuntu Bionic (18.04) Repository
+SignWith: false
+
+Origin: DTCT
+Label: MyLocalAPTRepo
+Suite: stable
+Codename: focal
+Architectures: amd64 arm64
+Components: main
+Description: Ubuntu Focal (20.04) Repository
+SignWith: false
+
+Origin: DTCT
+Label: MyLocalAPTRepo
+Suite: stable
+Codename: jammy
+Architectures: amd64 arm64
+Components: main
+Description: Ubuntu Jammy (22.04) Repository
+SignWith: false
+
+Origin: DTCT
+Label: MyLocalAPTRepo
+Suite: stable
+Codename: noble
+Architectures: amd64 arm64
+Components: main
+Description: Ubuntu Noble (24.04) Repository
+SignWith: false

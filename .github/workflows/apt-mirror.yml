@@ -1,0 +1,51 @@
+name: Build Custom APT Repository
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  build-repo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install required packages
+        run: |
+          sudo apt update
+          sudo apt install -y reprepro apt-rdepends gnupg dpkg-dev wget curl
+
+      - name: Setup repository structure
+        run: |
+          mkdir -p /home/runner/repo/{conf,pool,db}
+
+      - name: Copy distributions config
+        run: |
+          cp repo/conf/distributions /home/runner/repo/conf/
+
+      - name: Run package fetch script
+        run: |
+          chmod +x scripts/fetch_packages.sh
+          cd /home/runner/repo
+          ../scripts/fetch_packages.sh
+
+      - name: Export repository metadata
+        run: |
+          cd /home/runner/repo
+          reprepro export
+
+      - name: Package repository as tar.gz
+        run: |
+          cd /home/runner
+          tar czf custom-apt-repo.tar.gz repo
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: custom-apt-repo
+          path: /home/runner/custom-apt-repo.tar.gz
