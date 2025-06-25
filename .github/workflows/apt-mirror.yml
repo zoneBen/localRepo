@@ -30,9 +30,9 @@ jobs:
 
       - name: Run package fetch script
         run: |
+          cd /home/runner/work/localRepo/localRepo
           chmod +x scripts/fetch_packages.sh
-          cd /home/runner/repo
-          ../scripts/fetch_packages.sh
+          ./scripts/fetch_packages.sh
 
       - name: Export repository metadata
         run: |
