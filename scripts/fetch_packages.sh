@@ -20,6 +20,8 @@ download_package() {
 
     tmpdir="/tmp/debs-$codename-$arch"
     mkdir -p "$tmpdir"
+    # mkdir -p "$tmpdir"
+    chown _apt:_apt "$tmpdir"
     cd "$tmpdir" || exit
 
     # 根据架构选择源地址
