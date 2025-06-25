@@ -6,11 +6,6 @@ nginx
 snmpd snmp snmp-mibs-downloader
 ntpdate ntp
 lsof htop curl wget net-tools openssh-server socat sqlite3 ufw tcpdump
-android-tools-adb android-tools-fastboot
-mariadb-server
-redis-server
-mosquitto mosquitto-clients
-php php-fpm php-cli php-curl php-mysql php-gd php-mbstring php-xml php-json php-zip php-bcmath php-intl php-opcache
 "
 
 get_all_deps() {
@@ -53,7 +48,7 @@ EOF
 
 # 主循环
 for codename in bionic focal jammy noble; do
-  for arch in amd64; do   # GitHub Actions 是 x86_64，不支持 arm64 模拟下载
+  for arch in amd64 arm64; do   # GitHub Actions 是 x86_64，不支持 arm64 模拟下载
     echo "=== Processing $codename / $arch ==="
     for package in $PACKAGES; do
       download_package "$codename" "$arch" "$package"
