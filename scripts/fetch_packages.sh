@@ -3,9 +3,6 @@
 REPO_ROOT="/home/runner/repo"
 PACKAGES="
 nginx
-snmpd snmp snmp-mibs-downloader
-ntpdate ntp
-lsof htop curl wget net-tools openssh-server socat sqlite3 ufw tcpdump
 "
 
 get_all_deps() {
@@ -34,10 +31,10 @@ EOF
 
     sudo apt update --allow-insecure-repositories --allow-unauthenticated
 
-    apt-get download "$package"
+    apt-get download --architecture=$arch "$package" 
     deps=$(get_all_deps "$package")
     for dep in $deps; do
-        apt-get download "$dep" 2>/dev/null || true
+        apt-get download --architecture=$arch "$dep"  2>/dev/null || true
     done
 
     cd "$REPO_ROOT" || exit
@@ -48,7 +45,7 @@ EOF
 
 # 主循环
 for codename in bionic focal jammy noble; do
-  for arch in amd64 arm64; do   # GitHub Actions 是 x86_64，不支持 arm64 模拟下载
+  for arch in amd64 arm64; do 
     echo "=== Processing $codename / $arch ==="
     for package in $PACKAGES; do
       download_package "$codename" "$arch" "$package"
