@@ -22,19 +22,31 @@ download_package() {
     mkdir -p "$tmpdir"
     cd "$tmpdir" || exit
 
-    cat > /etc/apt/sources.list.d/repo.list <<EOF
-deb [arch=$arch] http://archive.ubuntu.com/ubuntu $codename main restricted universe multiverse
-deb [arch=$arch] http://archive.ubuntu.com/ubuntu $codename-updates main restricted universe multiverse
-deb [arch=$arch] http://archive.ubuntu.com/ubuntu $codename-backports main restricted universe multiverse
+    # 根据架构选择源地址
+    if [[ "$arch" == "arm64" ]]; then
+        baseurl="http://ports.ubuntu.com/ubuntu-ports"
+    else
+        baseurl="http://archive.ubuntu.com/ubuntu"
+    fi
+
+    # 创建临时源列表
+    cat > sources.list <<EOF
+deb [arch=$arch] $baseurl $codename main restricted universe multiverse
+deb [arch=$arch] $baseurl $codename-updates main restricted universe multiverse
 deb [arch=$arch] http://security.ubuntu.com/ubuntu $codename-security main restricted universe multiverse
 EOF
 
-    sudo apt update --allow-insecure-repositories --allow-unauthenticated
+    # 使用自定义源更新包列表
+    sudo apt update -o Dir::Etc::sourcelist="$tmpdir/sources.list" \
+                    -o Dir::Etc::sourceparts="-" \
+                    --allow-unauthenticated
 
-    apt-get download --architecture=$arch "$package" 
-    deps=$(get_all_deps "$package")
+    # 下载主包和依赖
+    sudo apt download "$package"
+
+    deps=$(apt-rdepends --state-follow=Installed --show=Dependencies "$package" | grep -v "^ ")
     for dep in $deps; do
-        apt-get download --architecture=$arch "$dep"  2>/dev/null || true
+        sudo apt download "$dep" 2>/dev/null || true
     done
 
     cd "$REPO_ROOT" || exit
